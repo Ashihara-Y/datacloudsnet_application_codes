@@ -1,0 +1,2 @@
+module WdiGdfFactsHelper
+end

@@ -1,0 +1,22 @@
+<h1>From WDI&GDF: <%= @country %> (<%= @country_name %>)</h1>
+<p>Region: <%= @country_region %></p>
+<p>Income Group: <%= @country_income_group %></p>
+<p>Lending Category: <%= @country_lending_category %></p><br>
+<h2>Series: <%= @series %> (<%= @series_name %>) </h2>
+Topic: <p><%= @series_topic %></p>
+Subopic 1: <p><%= @series_subtopic1 %></p><br>
+Definition: <p><%= @series_definition %></p>
+
+<table>
+ <tr>
+  <th>period_value</th>
+  <th>data_value</th>
+ </tr>
+
+<% @detail.each do |ex| %>
+ <tr>
+  <td><%= h ex.period_value %></td>
+  <td><%= h ex.data_value %></td>
+ </tr>
+<% end %>
+</table>

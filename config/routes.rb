@@ -54,5 +54,7 @@ Dataclouds3alphaAlpha::Application.routes.draw do
 
   # This is a legacy wild controller route that's not recommended for RESTful applications.
   # Note: This route will make all actions in every controller accessible via GET requests.
-  # match ':controller(/:action(/:id(.:format)))'
+match "detail" => "wdi_gdf_facts#detail"
+   match ':controller(/:action(/:id(.:format)))'
+  #connect '/detail', :controller=>'wdi_gdf_facts', :action=>'detail'
 end

@@ -1,0 +1,16 @@
+<h1>From WDI&GDF: <%= @country_usa %> example</h1>
+<table>
+ <tr>
+  <th>series_code</th>
+  <th>period_value</th>
+  <th>data_value</th>
+ </tr>
+
+<% @example_usa.each do |ex| %>
+ <tr>
+  <td><%= h ex.series_code %></td>
+  <td><%= h ex.period_value %></td>
+  <td><%= h ex.data_value %></td>
+ </tr>
+<% end %>
+</table>

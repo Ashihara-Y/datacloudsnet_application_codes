@@ -1,0 +1,18 @@
+<h1>From WDI&GDF: <%= @country %> (<%= @country_name %>) example</h1>
+<table>
+ <tr>
+  <th>series_code</th>
+  <th>series_name</th>
+  <th>period_value</th>
+  <th>data_value</th>
+ </tr>
+
+<% @example.each do |ex| %>
+ <tr>
+  <td><a href="/detail?target_series_code=<%= h ex.series_code %>&target_country_code=<%= @country %>"><%= h ex.series_code %></td>
+  <td><%= h ex.series_name %></td>
+  <td><%= h ex.period_value %></td>
+  <td><%= h ex.data_value %></td>
+ </tr>
+<% end %>
+</table>
