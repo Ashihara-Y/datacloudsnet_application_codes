@@ -1,9 +1,26 @@
 class WdiGdfFactsController < ApplicationController
   def index
-        @country_usa = 'USA'
-        @example_usa = WdiGdfFact.find(:all,
-                :select =>"series_code, period_value, data_value",
-                :conditions => ["country_code = ? AND period_value = ?", 'USA', 2007])
+    example = WdiGdfFnote.find(:all, :order => 'RAND()', :limit =>4)
+
+    i=0
+
+    @exx2=[]
+
+    example.each do |ex|
+
+      example2 = WdiGdfFact.find(:all,
+          :select => "country_name, series_name, period_value, data_value",
+          :conditions =>[
+		"data_value != ? AND country_code = ? AND series_code = ?", 
+		'', ex.country_code, ex.series_code])
+
+      exx_i = example2.sample
+      exx_i.data_value = exx_i.data_value.round(1)
+
+      @exx2.push exx_i
+
+      i+=1
+    end
   end
   def find
         @ver =WdiGdfCountry.find(:first,
@@ -14,11 +31,22 @@ class WdiGdfFactsController < ApplicationController
                 params[:search_string]])
         if @ver.nil?
         then
-                @country_usa = 'USA'
-                @example_usa = WdiGdfFact.find(:all,
-                        :select =>"series_code, period_value, data_value",
-                        :conditions => ["country_code = ? AND period_value = ?", 'USA', 2007])
-                render :action => "index"
+    	 example = WdiGdfFnote.find(:all, :order => 'RAND()', :limit =>4)
+    	 i=0
+    	 @exx2=[]
+    	 example.each do |ex|
+      	  example2 = WdiGdfFact.find(:all,
+          	:select => "country_name, series_name, period_value, data_value",
+          	:conditions =>[
+			"data_value != ? AND country_code = ? AND series_code = ?", 
+			'', ex.country_code, ex.series_code])
+      	  exx_i = example2.sample
+      	  exx_i.data_value = exx_i.data_value.round(1)
+      	  @exx2.push exx_i
+      	  i+=1
+    	 end
+	 render :action => "index"
+	 return
         else
                 if params[:search_string].match(/[A-Z]{3}/).nil?
                 then @country_name = params[:search_string]

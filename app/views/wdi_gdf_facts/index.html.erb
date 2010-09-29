@@ -1,16 +1,18 @@
-<h1>From WDI&GDF: <%= @country_usa %> example</h1>
+<h1>From WDI&GDF: example</h1>
 <table>
  <tr>
-  <th>series_code</th>
-  <th>period_value</th>
-  <th>data_value</th>
+  <th>Country, Group</th>
+  <th>Series name</th>
+  <th>Period</th>
+  <th>Value</th>
  </tr>
 
-<% @example_usa.each do |ex| %>
+<% @exx2.each do |exx| %>
  <tr>
-  <td><%= h ex.series_code %></td>
-  <td><%= h ex.period_value %></td>
-  <td><%= h ex.data_value %></td>
+  <td><%= exx.country_name %></td>
+  <td><%= exx.series_name %></td>
+  <td><%= exx.period_value %></td>
+  <td><%= number_with_delimiter(exx.data_value) %></td>
  </tr>
 <% end %>
 </table>
