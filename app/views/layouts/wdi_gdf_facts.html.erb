@@ -1,19 +1,436 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3c.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3c.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
+<html>
 <head>
-  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+  <title><%= @title %></title>
+  <link href='http://fonts.googleapis.com/css?family=PT+Sans+Narrow:regular,bold&subset=latin' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=PT+Sans+Caption:regular,bold&subset=latin' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=PT+Sans&subset=latin' rel='stylesheet' type='text/css'>
+  <%= stylesheet_link_tag :all %>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/prototype/1.6/prototype.js"></script>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/scriptaculous/1.8.3/scriptaculous.js?load=effects,slider"></script>
+  <%= javascript_include_tag 'rails' %>
+  <%= include_visualization_api %>
+  <%= render_visualizations %>
+  <%= csrf_meta_tag %>
+  <style type="text/css">
+
+
+  /* ==================== Layout ==================== */
+  body {
+	}
+
+  div#wrapper {
+	width: 80%;
+	}
+
+  div#container:after	{
+    display: block;
+  	clear: both;
+  	height: 0;
+  	visibility: hidden;
+	content: ".";
+  	}
+
+  div#content	{
+    width: 70%;
+    float: right;
+    }
+  
+  div#sidebar	{
+    width: 25%;
+  	float: left;
+  	}
+
+  div#foot	{
+    }
+
+
+  /* ==================== Header ==================== */
+
+  #header	{width: auto;
+  	height: 150px;}
+
+  #header_inner	{
+	padding: 20px;
+        }
+
+  #header_inner a: link {color: #ffffff} 
+  #header_inner a: visited {color: #ffffff} 
+  #header_inner a: active {color: #ffffff} 
+
+  #header h1	{margin: 0;
+  	font-size: 2.2em;
+  	font-family: 'PT Sans Caption', Verdana, Helvetica, sans-serif;
+	color: #339933;
+	}
+
+  #header p	{margin: 0;
+  	margin-top: 8px;
+  	font-size: 1em;}
+
+  /* ==================== Contents ==================== */
+
+  .post	{
+    width: auto;
+    }
+
+  .post h2	{
+    font-size: 1.8em;
+    font-family: 'PT Sans Caption';
+  	margin: 0;
+  	margin-bottom: 15px;
+  	background-color: #b8e964;
+  	line-height: 32px;
+  	padding-left: 10px;}
+
+  .posttext	{
+    font-size: 1.2em;
+    font-family: 'PT Sans';
+  	line-height: 1.5;
+  	}
+
+  .posttext p	{margin: 0;
+  	margin-bottom: 20px;}
+
+  .posttext #signiture {
+    text-lign: right
+    }
+
+  .random_data_stage {display:-webkit-box; disPlay:-moz-box;}
+  .random_data_stage div {-webkit-box-sizing: border-box; -moz-box-sizing: border-box; padding: 10px}
+
+  .d_icon	{
+    -webkit-border-radius: 5px; 
+    -moz-border-radius: 5px;
+    -webkit-box-shadow: 2px 2px 4px #333333; 
+    -moz-box-shadow: 2px 2px 4px #333333
+    }
+
+  .d_icon_dval	{font-family: "PT Sans Narrow"; font-size: 3ex; text-align: right;}
+
+  .d_icon_ccode	{font-family: "PT Sans Caption"; font-size: 5ex;}
+
+  .d_icon_cname	{font-family: "PT Sans"; font-size: 3ex;}
+
+  .d_icon_pval	{font-family: "PT Sans Narrow"; font-size: 2ex;}
+
+  .d_icon_sname	{font-family: "PT Sans"; font-size: 2ex;}
+
+  table#example-t {
+	width: 100%;
+	margin: 10px;
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+
+  table#example-t th {
+	width: auto;
+	border: 1px #708090 solid;
+    background-color: #fffff0;
+	font-family: "PT Sans";
+  }
+
+  table#example-t td#td-n {
+	border: 1px #708090 solid;
+	font-family: "PT Sans Narrow";
+  }
+
+  table#example-t td#td-n a {
+	font-family: "PT Sans Narrow";
+	color: #339966;
+  }
+
+  table#example-t td#td-d {
+	border: 1px #708090 solid;
+	text-align: right;
+	font-family: "PT Sans Narrow";
+  }
+
+  table#result-t {
+	width: 550px;
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+
+  table#result-t th {
+	width: auto;
+	border: 1px #708090 solid;
+    background-color: #fffff0;
+	font-family: "PT Sans";
+  }
+
+  table#result-t td {
+	border: 1px #708090 solid;
+	font-family: "PT Sans Narrow";
+  }
+
+  table#series-t-d {
+	width: 550px;
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+
+  table#series-t-d th {
+	width: auto;
+	border: 1px #708090 solid;
+    background-color: #fffff0;
+	font-family: "PT Sans";
+	text-align: left;
+  }
+
+  table#series-t-d td {
+	border: 1px #708090 solid;
+	font-family: "PT Sans";
+	text-align: left;
+  }
+
+  table#data-t-l {
+	width: 550px;
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+
+  table#data-t-l th {
+	width: auto;
+	border: 1px #708090 solid;
+    background-color: #fffff0;
+	font-family: "PT Sans";
+  }
+
+  table#data-t-l td#td-p {
+	width: 450px;
+	border: 1px #708090 solid;
+	font-family: "PT Sans Narrow";
+  }
+
+  table#data-t-l td#td-p a {
+	font-family: "PT Sans Narrow";
+	color: #339966;
+  }
+
+  table#data-t-l td#td-d {
+	border: 1px #708090 solid;
+	text-align: right;
+	font-family: "PT Sans Narrow";
+  }
+
+  table#data-t-s {
+	width: 550px;
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+
+  table#data-t-s th {
+	width: auto;
+	border: 1px #708090 solid;
+    background-color: #fffff0;
+	font-family: "PT Sans";  
+}
+
+  table#data-t-s td#td-n {
+	width: 450px;
+	border: 1px #708090 solid;
+	font-family: "PT Sans Narrow";
+  }
+
+  table#data-t-s td#td-n a {
+	font-family: "PT Sans Narrow";
+	color: #339966;
+  }
+
+  table#data-t-s td#td-d {
+	border: 1px #708090 solid;
+	text-align: right;
+	font-family: "PT Sans Narrow";
+  }
+
+  table#data-t-d {
+	width: 300px;
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+
+  table#data-t-d th {
+	width: auto;
+	border: 1px #708090 solid;
+    background-color: #fffff0;
+	font-family: "PT Sans";
+  }
+
+  table#data-t-d td#td-p {
+	width: 100px;
+	border: 1px #708090 solid;
+	text-align: center; 
+	font-family: "PT Sans Narrow";
+  }
+
+  table#data-t-d td#td-d {
+	border: 1px #708090 solid;
+	text-align: right;
+	font-family: "PT Sans Narrow";
+  }
+
+  div#data-detail {
+	display: -webkit-box;
+	display: -moz-box;
+  }
+
+  div#data-detail div#data-t-d {
+	-webkit-box-ordinal-group: 1;
+	-moz-box-ordinal-group: 1;
+  }
+
+  div#data-detail div#data-g {
+	-webkit-box-ordinal-group: 2;
+	-moz-box-ordinal-group: 2;
+  }
+
+  div#data-detail div {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	padding: 10px;
+  }
+
+  /* ==================== Side-bar ==================== */
+
+  .menu	{width: auto;
+    font-family: 'PT Sans Narrow', arial, serif;
+  	font-size: 2.5ex;}
+
+  .menu li	{border-bottom: solid 1px #ffffff;
+  	padding-bottom: 8px;
+  	margin-bottom: 8px;
+  	line-height: 1.2;
+  	list-style-type: none;}
+
+  .menu li a	{color: #000000;
+  	text-decoration: none;
+  	padding-left: 10px;}
+
+  .menu li a:hover	{color: #ffffff}
+
+  .menu ul	{margin: 0;
+  	padding: 0;
+  	border-top: solid 1px #ffffff;
+  	padding-top: 8px;}
+
+
+  /* ==================== Footer ==================== */
+
+  #footer	{width: auto;
+  	border-top: solid 5px #b8e964;
+  	padding-top: 10px;
+  	padding-bottom: 20px;}
+
+  #footer p	{color: #000000;
+  	font-size: 0.75em;
+  	margin: 0;}
+
+  </style>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-2019083-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
 </head>
 <body>
-<span style="text-align: right">
-  <% form_tag "/wdi_gdf_facts/find" do %>
-   <%= text_field_tag :search_string %>
-   <%= submit_tag "Search" %>
-  <% end %>
-</span>
-<p style="color: green"><%= flash[:notice] %></p>
+<div id="wrapper">
 
-<%= yield %>
+<div id="head">
+ <div id="header">
+  <div id="header_inner">
+	<a href="/wdi_gdf_facts/index">
+        <h1 text-shadow: 1px 1px 1px #8b8b7d; >DataClouds.net</h1>
+	</a>
+        <p>Take data clouds into your hands!</p>
+
+  </div>
+ </div>
+</div>
+
+
+<div id="container">
+
+ <div id="content">
+
+ <%= yield %>
+ 
+ </div>
+ 
+ <div id="sidebar">
+  <div class="menu">
+
+  <span style="text-align: left">
+	  <% form_tag "/wdi_gdf_facts/list" do %>
+	  <%= label_tag "Search for Countries" %>:
+	  <%= text_field_tag :search_string %>
+      <%= submit_tag "Search" %>
+      <% end %>
+      <% if flash[:message] %>
+        <div style="color: green"><%= h flash[:message] %></div>
+      <% end %>
+  </span>
+
+   <form action="/wdi_gdf_facts/list" method="get" >
+    <select name="search_string">
+		<option value="" selected>--Please select--</option>
+		<optgroup label="Geographical Grouping:">
+		<option value="WLD" >World</option>
+		<option value="EAP" >East Asia & Pacific</option>
+		<option value="SAS" >South Asia</option>
+		<option value="MNA" >Middle East & North Africa</option>
+		<option value="ECA" >Europe & Central Asia</option>
+		<option value="SSA" >Sub Saharan Africa</option>
+		<option value="LAC" >Latin America & the Caribbean</option>
+		<option value="LLC" >Landlocked Developing Countries</option>
+		<option value="SID" >Small Island Developing States</option>
+		</optgroup>
+		<optgroup label="Economic Grouping:">
+		<option value="LDC" >Least developed countries</option>
+		<option value="HPC" >Heavily indebted poor countries</option>
+		<option value="LIC" >Low income countries</option>
+		<option value="LMC" >Lower middle income countries</option>
+		<option value="LMY" >Low & middle income countries</option>
+		<option value="MIC" >Middle income countries</option>
+		<option value="UMC" >Upper middle income countries</option>
+		<option value="HIC" >High income countires</option>
+		<option value="EMU" >Euro area</option>
+		<option value="DAC" >DAC countries</option>
+		</optgroup>
+	</select>
+	<input type="submit" value="Retrieve" >
+   </form>
+  <span style="text-align: left">
+	  <% form_tag "/wdi_gdf_facts/search" do %>
+	  <%= label_tag "Search for Series" %>:
+	  <%= text_field_tag :search_words %>
+      <%= submit_tag "Search" %>
+      <% end %>
+      <% if flash[:message] %>
+        <div style="color: green"><%= h flash[:message] %></div>
+      <% end %>
+  </span>
+  </div>
+ </div>
+
+</div>
+
+<div id="foot">
+ <div id="footer">
+  <p>Copyright &copy; DataClouds.net, Some Rights Reserved.</p>
+ </div>
+</div>
+
+
+</div>
 
 </body>
 </html>

@@ -1,0 +1,14 @@
+<div id="breadcrumbs"><p class="breadecrumbs"><a href="/wdi_gdf_facts/index">Home</a>&nbsp;&gt;&nbsp;<%= @country_name %> (<%= @country %>)</p></div>
+<table id="data-t-l" >
+ <tr>
+  <th>series subcategory</th>
+  <th>number of series</th>
+ </tr>
+
+<% @c_subtopic_list.each do |key,value| %>
+<tr>
+<td id="td-p" ><a href="/wdi_gdf_facts/show?target_subtopic=<%= ERB::Util.u(key) %>&target_country_code=<%= @country %>"><%= h key %></a></td>
+<td id="td-d" ><%= h value %></td>
+</tr>
+<% end %>
+</table>

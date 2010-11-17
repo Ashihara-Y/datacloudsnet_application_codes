@@ -1,0 +1,24 @@
+<div id="breadcrumbs"><p class="breadecrumbs"><a href="/wdi_gdf_facts/index">Home</a>&nbsp;&gt;&nbsp;<a href="/wdi_gdf_facts/list?search_string=<%= @country %>"><%= @country_name %> (<%= @country %>)</a>&nbsp;&gt;&nbsp;'<%= @subtopic %>'</p></div>
+
+<table id="data-t-s" >
+ <tr>
+  <th>Series name</th>
+  <th>Oldest value</th>
+  <th>Current value</th>
+ </tr>
+<% @country_series_value.each do |series| %>
+<tr>
+<td id="td-n" ><a href="/wdi_gdf_facts/detail?target_series_code=<%= ERB::Util.u(series[0]) %>&target_country_code=<%= @country %>"><%= h series[1] %></a></td>
+<td id="td-d" ><%= number_with_delimiter(series[3].round(2)) %>(<%= series[2] %>)</td>
+<td id="td-d" ><%= number_with_delimiter(series[5].round(2)) %>(<%= series[4] %>)</td>
+</tr>
+<% end %>
+</table>
+<p>
+<div id="addtoany">
+<!-- AddToAny BEGIN -->
+<a class="a2a_dd" href="http://www.addtoany.com/share_save"><img src="http://static.addtoany.com/buttons/share_save_171_16.png" width="171" height="16" border="0" alt="Share"/></a>
+<script type="text/javascript" src="http://static.addtoany.com/menu/page.js"></script>
+<!-- AddToAny END -->
+</div>
+</p>

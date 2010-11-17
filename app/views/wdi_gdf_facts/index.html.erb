@@ -1,18 +1,42 @@
-<h1>From WDI&GDF: example</h1>
-<table>
+<h2>Example from data clouds:</h2>
+<div id="example-stage" >
+<table id="example-t" >
  <tr>
   <th>Country, Group</th>
   <th>Series name</th>
-  <th>Period</th>
-  <th>Value</th>
+  <th>Sample Value(period)</th>
+  <th>Current Value(period)</th>
  </tr>
-
-<% @exx2.each do |exx| %>
+<%= @exx2.each do |exx| %>
  <tr>
-  <td><%= exx.country_name %></td>
-  <td><%= exx.series_name %></td>
-  <td><%= exx.period_value %></td>
-  <td><%= number_with_delimiter(exx.data_value) %></td>
+  <td id="td-n" ><%= exx[0] %></td>
+  <td id="td-n" ><%= exx[1] %></td>
+  <td id="td-d" ><%= number_with_delimiter(exx[3]) %>(<%= exx[2] %>)</td>
+  <td id="td-d" ><%= number_with_delimiter(exx[5]) %>(<%= exx[4] %>)</td>
  </tr>
 <% end %>
 </table>
+</div>
+<div class="post">
+<h2>About DataClouds.net</h2>
+ <div class="posttext">
+	<p>Thank you for your visiting to this Web site! This Web site is a data retrieval service based on the published indicators, including the World Bank one.</p>
+	<p>Last April, the World Bank liberalized its indicators to the public with few restrictions. The amount of opened data is so huge that it seems clouds in the sky. Paying a respect to the above action of the Bank, I'd like to make another contribution to the public with such clouds of data. This Web site is my attempt to it.</p>
+
+	<p>However the economic and social indicators are the basement of our decision-making, sometimes they arelimited for our access, use and sharing. We found that there is a room for improvement and new services.</p>
+	<p>"More ease of access", "more ease of use", and "more ease of share" for the indicators with "low cost" is our intention for this Web site, "DataClouds.net". We hope you enjoy this Web-site and please share your comments! Thank you in advance.</p>
+    <p id="signiture">November 1, 2010</p>
+	<p id="signiture">Yoshihiro Ashihara</p>
+ </div>
+
+<h2>How to use?</h2>
+ <div class="posttext">
+	<p>(Sorry, it's under construction)</p>
+ </div>
+
+<h2>Data Sources and Roadmap</h2>
+ <div class="posttext">
+	<p>(Sorry, it's under construction)</p>
+ </div>
+
+</div>
