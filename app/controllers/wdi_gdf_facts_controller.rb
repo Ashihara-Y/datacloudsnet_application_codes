@@ -1,5 +1,8 @@
 class WdiGdfFactsController < ApplicationController
   def index
+	@title = 'Welcome to DataClouds.net!'
+=begin
+
 
     exx = WdiGdfFnote.find(:all, 
 		:select => "country_code, series_code", 
@@ -37,7 +40,7 @@ class WdiGdfFactsController < ApplicationController
     end
 
     @exx2 = ex3
-
+=end
   end
   def search
 		ex_s = WdiGdfSeries.find_by_sql(["select * from wdi_gdf_series where match(series_name) against(?) order by subtopic1", params[:search_words]])
@@ -128,8 +131,6 @@ class WdiGdfFactsController < ApplicationController
 		@country_series_value.push country_series_value
 	    end
   end
-=begin
-=end
   def detail
         @detail = WdiGdfFact.find(:all,
 				:select => "period_value, data_value",

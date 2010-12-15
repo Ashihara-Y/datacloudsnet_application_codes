@@ -1,22 +1,4 @@
-<h2>Example from data clouds:</h2>
-<div id="example-stage" >
-<table id="example-t" >
- <tr>
-  <th>Country, Group</th>
-  <th>Series name</th>
-  <th>Sample Value(period)</th>
-  <th>Current Value(period)</th>
- </tr>
-<%= @exx2.each do |exx| %>
- <tr>
-  <td id="td-n" ><%= exx[0] %></td>
-  <td id="td-n" ><%= exx[1] %></td>
-  <td id="td-d" ><%= number_with_delimiter(exx[3]) %>(<%= exx[2] %>)</td>
-  <td id="td-d" ><%= number_with_delimiter(exx[5]) %>(<%= exx[4] %>)</td>
- </tr>
-<% end %>
-</table>
-</div>
+
 <div class="post">
 <h2>About DataClouds.net</h2>
  <div class="posttext">
