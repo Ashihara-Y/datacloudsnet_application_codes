@@ -280,6 +280,22 @@
 	<% chart.number "Value" %>
 	<% chart.add_rows(@A_for_Graph) %>
 <% end %>
+<span>
+   <form action="/wdi_gdf_facts/detail" method="get" >
+	<input type="hidden" name="target_series_code" value="<%= @series %>">
+	<input type="hidden" name="target_country_code" value="<%= @country %>">
+    <select name="chart_style">
+		<option value="" selected>--Please select--</option>
+		<option value="BarChart" >Bar Chart</option>
+		<option value="ColumnChart" >Column Chart</option>
+		<option value="LineChart" >Line Chart</option>
+		<option value="AreaChart" >Area Chart</option>
+		<option value="ScatterChart" >Scatter Chart</option>
+	</select>
+	<input type="submit" value="Change Chart-Style" >
+   </form>
+</span>
+
 </div>
 </div>
 
