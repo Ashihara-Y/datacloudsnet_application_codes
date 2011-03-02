@@ -243,7 +243,7 @@
         <option value="ZMB" >Zambia</option>
         <option value="ZWE" >Zimbabwe</option>
 	</select>
-	<input type="submit" value="Change to Others" >
+	<input type="submit" value="Change to Other Areas/Countries" >
    </form>
 </span>
 <table id="series-t-d" >
@@ -254,9 +254,13 @@
 <tr><th colspan="2" ><font color="#339933" size="+1"><%= @s_parts.series_name %> (<%= @series %>)</font></th></tr>
 <tr><th>Topic:</th><td><%= @s_parts.topic %></td></tr>
 <tr><th>Subopic 1:</th><td><%= @s_parts.subtopic1 %></td></tr>
-<tr><th>Source:</th><td>WDI & GDF, World Bank</td></tr></table>
+<tr><th>Source:</th><td>WDI & GDF, World Bank</td></tr>
+</table>
 <br>
-<dl>Definition: <dt><i><%= @s_parts.series_name %>:</i></dt><dd><%= @s_parts.long_definition %></dd></dl>
+
+<p><a href="/wdi_gdf_facts/globalcompare?target_series_code=<%= ERB::Util.u(@series)%>">Global Comparison on this index...</a></p>
+
+<dl id="def_detail_dl">Definition: <dt id="def_detail_dt"><i><%= @s_parts.series_name %>:</i></dt><dd id="def_detail_dd"><%= @s_parts.long_definition %></dd></dl>
 
 <div id="data-detail">
 <div id="data-t-d">

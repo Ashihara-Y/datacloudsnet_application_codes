@@ -1,54 +1,37 @@
 class WdiGdfFactsController < ApplicationController
   def index
 	@title = 'Welcome to DataClouds.net!'
-=begin
+  end
+  def general_search
+		ex_gs = WdiGdfFact.search params[:search_words], 
+		                                 :match_mode => :extended2,
+		                                 #:group_by => 'country_code',
+		                                 :group_by => 'series_code',
+		                                 :group_function => :attr,
+		                                 :group_clause => "@count desc",
+		                                 :page => params[:page],
+		                                 :per_page => 250
 
-
-    exx = WdiGdfFnote.find(:all, 
-		:select => "country_code, series_code", 
-		:order => 'RAND()',
-		:limit => 5)
-
-    i=0
-
-    ex3=[]
-    @exx2=[]
-
-    exx.each do |ex|
-
-      example2 = WdiGdfFact.find(:all,
-          	:select => "country_name, series_name, period_value, data_value",
-          	:conditions =>["data_value != ? AND country_code = ? AND series_code = ?", 
-			'', ex.country_code, ex.series_code])
-
-      ex1_i = example2.last
-      ex2_i = example2.sample while ex2_i.nil?
-      ex1_i.data_value = ex1_i.data_value.round(2)
-      ex2_i.data_value = ex2_i.data_value.round(2)
-
-      exx_i = Array.new
-      exx_i.push ex2_i.country_name,
-		 ex2_i.series_name,
-		 ex2_i.period_value,
-		 ex2_i.data_value,
-		 ex1_i.period_value,
-		 ex1_i.data_value
-
-      ex3.push exx_i
-
-      i+=1
-    end
-
-    @exx2 = ex3
-=end
+        if ex_gs.length==0
+        then
+          redirect_to(:controller=>"wdi_gdf_facts", :action=>"index")
+          flash[:message_1] = "Sorry, we have no data for such keywords."
+        else           
+            @result_gs = ex_gs
+            @result_facets = ex_gs.facets
+			@search_words = @result_gs.args[0]
+            @title = 'General Search Results for +"'"+@search_words+"'": DataClouds.net Alpha'
+            #session[:search_words] = params[:search_words]
+            #@result_gs_total_length = ex_gs.total_entries
+        end
   end
   def search
 		ex_s = WdiGdfSeries.find_by_sql(["select * from wdi_gdf_series where match(series_name) against(?) order by subtopic1", params[:search_words]])
 
-		if ex_s.nil?
+		if ex_s.length==0
 		then
 	     redirect_to(:controller=>"wdi_gdf_facts", :action=>"index")
-         flash[:message] = "Sorry, we have no data for such keyword."
+         flash[:message_3] = "Sorry, we have no data for such keyword."
         else
 			@result_s = Array.new
 			 ex_s.each do |ex|
@@ -60,76 +43,115 @@ class WdiGdfFactsController < ApplicationController
 		end
   end
   def list
-        @ver =WdiGdfCountry.find(:first,
-                :select => "country_code, country_name",
-                :conditions =>
-                ["country_name = ? OR country_code = ?",
-                params[:search_string],
-                params[:search_string]])
-        if @ver.nil?
+        ver =WdiGdfCountry.
+			  where('country_name LIKE ? OR country_code LIKE ?', 
+			  params[:search_string], params[:search_string]).
+			  first
+        if ver.nil?
         then
 	     redirect_to(:controller=>"wdi_gdf_facts", :action=>"index")
-         flash[:message] = "Sorry, we have no data for such keyword."
+         flash[:message_2] = "Sorry, we have no data for such keyword."
         else
                if params[:search_string].match(/[A-Z]{3}/).nil?
-                then @country_name = params[:search_string]
-		        country_examp = WdiGdfCountry.find(:first, 
-				:conditions => ["country_name = ?", params[:search_string]])
-        		@c_subtopic_list=country_examp.wdi_gdf_series.count(:all,
-                                :group => 'subtopic1',
-                                :conditions => ["period_value = ?", 2009])
-                      @country = country_examp.country_code
-                 else @country = params[:search_string]
-		        country_examp = WdiGdfCountry.find(:first, 
-				:conditions => ["country_code = ?", params[:search_string]])
-        		@c_subtopic_list=country_examp.wdi_gdf_series.count(:all,
-                                :group => 'subtopic1',
-                                :conditions => ["period_value = ?", 2009])
-                      @country_name = country_examp.country_name
+                then 
+					@country_name = ver.country_name
+					c_s = ver.
+						  wdi_gdf_series.
+						  select('topic, subtopic1, wdi_gdf_series.series_code').
+						  where('period_value=?',2000)
+					c_s_subtopic_list = c_s.map{|ex| ex.subtopic1 }.uniq
+					c_sub_a =[]				
+					c_s_subtopic_list.each do |ex|
+						count = c_s.select{|x| x.subtopic1==ex}.count
+						topic = c_s.select{|y| y.subtopic1==ex}[0].topic
+						c_sub_a.push [ex, count, topic]
+					end
+					@c_subtopic_list = c_sub_a.sort_by{|e| e[2]}                
+					@country = ver.country_code
+                else @country = ver.country_code
+					c_s = ver.
+						  wdi_gdf_series.
+			     		  where('period_value=?',2000).
+						  select('topic, subtopic1, wdi_gdf_series.series_code')
+					c_s_subtopic_list = c_s.map{|ex| ex.subtopic1}.uniq
+					c_sub_a = []
+					c_s_subtopic_list.each do |ex|
+						count = c_s.select{|x| x.subtopic1==ex}.count
+						topic = c_s.select{|y| y.subtopic1==ex}[0].topic
+						c_sub_a.push [ex, count, topic]
+					end
+					@c_subtopic_list = c_sub_a.sort_by{|e| e[2] }
+                	@country_name = ver.country_name
                 end
                 params[:target_country_code] = @country
 				@title = 'Topic list for '+"'"+@country_name+"'"+': DataClouds.net Alpha'
         end
   end
-
+  def summary
+    if params[:period].nil? then params[:period]=2008 end
+    ex_overview = WdiGdfFact.select('wdi_gdf_facts.series_code, wdi_gdf_facts.series_name, wdi_gdf_facts.country_code, wdi_gdf_facts.country_name, wdi_gdf_facts.period_value, wdi_gdf_facts.data_value, wdi_gdf_series.overview').
+                             where('country_code =? AND 
+                                    overview >=? AND 
+                                    data_value !=? AND 
+                                    period_value =?', 
+                                    params[:target_country_code], 1, '', params[:period]).
+                                    joins('left join wdi_gdf_series on wdi_gdf_series.id = series_id')
+    
+    @overview = ex_overview.sort_by{|ex| ex.overview.to_i}
+	@country = ex_overview[0].country_code
+	@period = params[:period]
+	@country_name = ex_overview[0].country_name
+	@title = 'Summary for '+"'"+@country_name+"'"+': DataClouds.net Alpha'
+  end
   def show
   	@country = params[:target_country_code]
-  	country_examp = WdiGdfCountry.find(:first,
-   		:conditions => ["country_code = ?", params[:target_country_code]])
-
-  	@country_name = country_examp.country_name
-  	@subtopic = params[:target_subtopic]
+  	c_subt_ex = WdiGdfFact.
+				where('country_code=? AND subtopic1=? AND data_value !=?', 
+					@country, params[:target_subtopic],'').
+				joins('left join wdi_gdf_series on wdi_gdf_series.id=series_id')
+				
+   	series_ex = WdiGdfSeries.
+				where('subtopic1=?', params[:target_subtopic]).
+				select('series_code').map{|x| x.series_code}
+	@country_series_value = []
+	series_ex.each do |ex|
+				ser_name = c_subt_ex.
+							select{|x| x.series_code==ex }.
+							sort{|y| y.period_value }.reverse.
+							first.
+							series_name
+				ser_code = c_subt_ex.
+							select{|x| x.series_code==ex }.
+							sort{|y| y.period_value }.reverse.
+							first.
+							series_code
+				oldest_v  = c_subt_ex.
+							select{|x| x.series_code==ex }.
+							sort{|y| y.period_value }.reverse.
+							first.
+							data_value
+				oldest_p  = c_subt_ex.
+							select{|x| x.series_code==ex }.
+							sort{|y| y.period_value }.reverse.
+							first.
+							period_value
+				current_v = c_subt_ex.
+							select{|x| x.series_code==ex }.
+							sort{|y| y.period_value }.reverse.
+							last.
+							data_value
+				current_p = c_subt_ex.
+							select{|x| x.series_code==ex }.
+							sort{|y| y.period_value }.reverse.
+							last.
+							period_value
+				element = []
+				element.push ser_code,ser_name,oldest_p,oldest_v,current_p,current_v
+				@country_series_value.push element
+	end
+  	@country_name = c_subt_ex[0].country_name
+  	@subtopic = params[:target_subtopic].delete("'")
 	@title = 'Series on '+"'"+@country_name+"'"+' & '+"'"+@subtopic +"'"+': DataClouds.net Alpha'
-  	@country_series_list=country_examp.wdi_gdf_series.find(:all,
-            	:select=>"wdi_gdf_series.series_code, 
-                          wdi_gdf_series.series_name, 
-                          wdi_gdf_series.topic, 
-                          wdi_gdf_series.subtopic1", 
-            	:group => 'wdi_gdf_series.series_code',
-            	:conditions => ["subtopic1 = ?", params[:target_subtopic]])
-
-	@country_series_value = Array.new
-
-    @country_series_list.each do |element|
-
-		element_values = country_examp.wdi_gdf_facts.find(:all,
-			:select => "series_code, series_name, period_value, data_value",
-			:order => 'period_value',
-			:conditions =>["series_code = ? AND data_value != ?", element.series_code, ''])
-
-		element_last_value = element_values.last
-		element_oldest_value= element_values.first
-
-		country_series_value = Array.new
-		country_series_value.push element_oldest_value.series_code,
-								  element_oldest_value.series_name,
-								  element_oldest_value.period_value,
-								  element_oldest_value.data_value,
-								  element_last_value.period_value,
-								  element_last_value.data_value
-
-		@country_series_value.push country_series_value
-	    end
   end
   def detail
         @detail = WdiGdfFact.find(:all,
@@ -146,7 +168,7 @@ class WdiGdfFactsController < ApplicationController
 		@detail.each do |obs|
 			@A_for_Graph.push [obs.period_value.to_s, obs.data_value]
 		end
-
+		@A_for_Graph = @A_for_Graph.sort_by{|ex| ex[0]}
         @series = params[:target_series_code]
         @country = params[:target_country_code]
 		@c_ex = WdiGdfCountry.find(:first,
@@ -166,5 +188,28 @@ class WdiGdfFactsController < ApplicationController
 		@chart_style = params[:chart_style]
 		@chart_style = 'BarChart' if @chart_style.nil?
   end
+  def globalcompare
+    if params[:period].nil? then params[:period] = 2008 end
+    @g_comp_country = WdiGdfFact.select('wdi_gdf_facts.country_name, 	
+										wdi_gdf_facts.country_code, 
+										series_code, 
+										series_name, 
+										data_value').
+                              order('data_value desc').
+                              where('series_code =? AND period_value =? AND region !=?', 
+	                              params[:target_series_code],
+	                              params[:period],
+	                              'Aggregates').
+                              joins('left join wdi_gdf_countries 
+									on wdi_gdf_countries.id = wdi_gdf_facts.country_id')
+
+    @chart_style = params[:chart_style]
+    @chart_style = 'BarChart' if @chart_style.nil?
+	@series_name = @g_comp_country[0].series_name
+	@period = params[:period]
+    @series = params[:target_series_code]
+	@title = 'Global Comparison on'+"'"+@g_comp_country[0].series_name+"'"+': DataClouds.net Alpha'
+  end
+
 
 end

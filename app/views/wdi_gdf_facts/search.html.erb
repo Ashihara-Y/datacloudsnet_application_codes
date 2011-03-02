@@ -1,11 +1,11 @@
-<div id="breadcrumbs"><p class="breadecrumbs"><a href="/wdi_gdf_facts/index">Home</a>&nbsp;&gt;&nbsp;Search results for ("<%= params[:search_words] %>")</p></div>
+<div id="breadcrumbs"><p class="breadecrumbs"><a href="/wdi_gdf_facts/index">Home</a>&nbsp;&gt;&nbsp;Search results for "<%= params[:search_words] %>"</p></div>
 
 <div id="series-list" >
 <span>
 <table id="result-t" >
  <tr>
  <th>Series name</th>
- <%= @result_s.each do |ex| %>
+ <% @result_s.each do |ex| %>
  <tr>
  <td><a href="/wdi_gdf_facts/detail?target_series_code=<%= ex[1] %>&target_country_code=WLD"><%= ex[0] %></td>
  </tr>

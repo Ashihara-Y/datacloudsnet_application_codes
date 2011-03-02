@@ -290,6 +290,18 @@
 	-moz-box-sizing: border-box;
 	padding: 10px;
   }
+ 
+ dl#def_detail_dl {
+	font-family: 'PT Sans Caption'
+  }
+
+ dt#def_detail_dt {
+	font-family: 'PT Sans Caption'
+  }
+
+ dd#def_detail_dd {
+	font-family: 'PT Sans'
+  }
 
   /* ==================== Side-bar ==================== */
 
@@ -350,7 +362,7 @@
 	<a href="/wdi_gdf_facts/index">
         <h1 text-shadow: 1px 1px 1px #8b8b7d; >DataClouds.net (running Alpha-test)</h1>
 	</a>
-        <p>Take data clouds into your hands!</p>
+        <p>Take data clouds into your hands, and share your view!</p>
 
   </div>
  </div>
@@ -368,14 +380,25 @@
  <div id="sidebar">
   <div class="menu">
 
-  <span style="text-align: left">
+  <span style="text-align: left, width: 80px">
+	  <% form_tag "/wdi_gdf_facts/general_search" do %>
+	  <%= label_tag "General Search" %>:
+	  <%= text_field_tag :search_words %>
+      <%= submit_tag "Search" %>
+      <% end %>
+      <% if flash[:message_1] %>
+        <div style="color: green"><%= h flash[:message_1] %></div>
+      <% end %>
+  </span>
+<br/>
+  <span style="text-align: left, width: 80px">
 	  <% form_tag "/wdi_gdf_facts/list" do %>
-	  <%= label_tag "Search for Countries" %>:
+	  <%= label_tag "Country-name-oriented Search" %>:
 	  <%= text_field_tag :search_string %>
       <%= submit_tag "Search" %>
       <% end %>
-      <% if flash[:message] %>
-        <div style="color: green"><%= h flash[:message] %></div>
+      <% if flash[:message_2] %>
+        <div style="color: green"><%= h flash[:message_2] %></div>
       <% end %>
   </span>
 
@@ -408,14 +431,15 @@
 	</select>
 	<input type="submit" value="Retrieve" >
    </form>
-  <span style="text-align: left">
+  <br/>
+  <span style="text-align: left, width: 80px">
 	  <% form_tag "/wdi_gdf_facts/search" do %>
-	  <%= label_tag "Search for Series" %>:
+	  <%= label_tag "Series-name-oriented-Search" %>:
 	  <%= text_field_tag :search_words %>
       <%= submit_tag "Search" %>
       <% end %>
-      <% if flash[:message] %>
-        <div style="color: green"><%= h flash[:message] %></div>
+      <% if flash[:message_3] %>
+        <div style="color: green"><%= h flash[:message_3] %></div>
       <% end %>
   </span>
   </div>

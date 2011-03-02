@@ -1,0 +1,15 @@
+<div id="breadcrumbs"><p class="breadecrumbs"><a href="/wdi_gdf_facts/index">Home</a>&nbsp;&gt;&nbsp;General Search Results</p></div>
+
+Your keywords matched with <%= @result_gs.total_entries %> series as follows (Page: <%= @result_gs.current_page %> / <%= @result_gs.total_pages %>):
+<table id="result-t" >
+ <tr>
+ <th>Search Results (Series Name, Country Name)</th>
+ </tr>
+ <% @result_gs.each do |ex| %>
+ <tr>
+ <td><a href="/wdi_gdf_facts/detail?target_series_code=<%= ex.series_code %>&target_country_code=<%= ex.country_code%>"><%= ex.series_name %>, <%= ex.country_name %></td>
+ </tr>
+<% end %>
+</table>
+<%= will_paginate @result_gs %>
+

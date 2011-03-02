@@ -1,0 +1,8 @@
+development:
+  sql_query_range: SELECT IFNULL(MIN(`id`), 1), IFNULL(MAX(`id`), 1) FROM `wdi_gdf_facts`
+  mem_limit: 256M
+  morphology: stem_en
+production:
+  sql_query_range: SELECT IFNULL(MIN(`id`), 1), IFNULL(MAX(`id`), 1) FROM `wdi_gdf_facts`
+  mem_limit: 256M
+  morphology: stem_en

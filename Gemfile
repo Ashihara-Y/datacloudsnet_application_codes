@@ -1,23 +1,49 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.1'
+gem 'rails', '3.0.3'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'mysql2'
-gem 'passenger'
-gem 'scruffy'
+#gem 'passenger'
+#gem 'scruffy'
 gem 'jquery-rails'
+gem 'will_paginate', '~> 3.0.pre'
+
+gem 'mongrel', '1.2.0.pre2'
+
+gem 'mongrel_cluster'
 
 # Use unicorn as the web server
-# gem 'unicorn'
+gem 'unicorn'
 
 # Deploy with Capistrano
 # gem 'capistrano'
 
 # To use debugger
 # gem 'ruby-debug'
+
+# Use thinking-sphinx
+gem 'thinking-sphinx', 
+  :git		=> 'git://github.com/freelancing-god/thinking-sphinx.git',
+  :branch	=> 'rails3',
+  :require	=> 'thinking_sphinx'
+
+# Use rpx_now
+gem 'rpx_now'
+
+# For development, test
+#group :development, :test do
+#	gem 'capybara'
+#	gem 'database_cleaner'
+#	gem 'cucumber-rails'
+#	gem 'cucumber'
+#	gem 'rspec-rails', '>=2.0.0.beta.5'
+#	gem 'rspec', '>=2.0.0.beta.5'
+#	gem 'spork'
+#	gem 'launchy'
+#end
 
 # Bundle the extra gems:
 # gem 'bj'
