@@ -12,7 +12,7 @@
 
 <% @c_subtopic_list.each do |ex| %>
 <tr>
-<td id="td-p" ><a href="/wdi_gdf_facts/show?target_subtopic=<%= CGI.escape(ex[0]) %>&target_country_code=<%= @country %>"><%= h ex[2] %>, <%= h ex[0]%></a></td>
+<td id="td-p" ><a href="/wdi_gdf_facts/show?target_subtopic=<%= CGI.escape(ex[0]) %>&target_country_code=<%= @country %>"><%= h ex[2] %>,  &nbsp;<%= h ex[0]%></a></td>
 <td id="td-d" ><%= h ex[1] %></td>
 </tr>
 <% end %>

@@ -105,52 +105,42 @@ class WdiGdfFactsController < ApplicationController
   end
   def show
   	@country = params[:target_country_code]
+    #c_ex = WdiGdfCountry.where('country_code=?', @country).first
+	subt = CGI.unescape(params[:target_subtopic])
   	c_subt_ex = WdiGdfFact.
-				where('country_code=? AND subtopic1=? AND data_value !=?', 
-					@country, params[:target_subtopic],'').
-				joins('left join wdi_gdf_series on wdi_gdf_series.id=series_id')
-				
+				select('series_id, 
+						period_value, 
+						data_value,
+						country_name').
+				where('country_code=? AND subtopic1=? AND data_value !=?', @country,subt,'').
+				joins('left join wdi_gdf_series on wdi_gdf_series.id=series_id').
+				order('period_value')
    	series_ex = WdiGdfSeries.
-				where('subtopic1=?', params[:target_subtopic]).
-				select('series_code').map{|x| x.series_code}
+				where('subtopic1=?', subt).
+				select('id, series_code, series_name')
+	#s_id_ex = series_ex.map{|x| x.id}
 	@country_series_value = []
 	series_ex.each do |ex|
-				ser_name = c_subt_ex.
-							select{|x| x.series_code==ex }.
-							sort{|y| y.period_value }.reverse.
-							first.
-							series_name
-				ser_code = c_subt_ex.
-							select{|x| x.series_code==ex }.
-							sort{|y| y.period_value }.reverse.
-							first.
-							series_code
-				oldest_v  = c_subt_ex.
-							select{|x| x.series_code==ex }.
-							sort{|y| y.period_value }.reverse.
-							first.
-							data_value
-				oldest_p  = c_subt_ex.
-							select{|x| x.series_code==ex }.
-							sort{|y| y.period_value }.reverse.
-							first.
-							period_value
-				current_v = c_subt_ex.
-							select{|x| x.series_code==ex }.
-							sort{|y| y.period_value }.reverse.
-							last.
-							data_value
-				current_p = c_subt_ex.
-							select{|x| x.series_code==ex }.
-							sort{|y| y.period_value }.reverse.
-							last.
-							period_value
+			c_s_ex = c_subt_ex.select{|x| x.series_id==ex.id }
+			if c_s_ex[0].nil? then next else
+				oldest_v  = c_s_ex[0].data_value
+				oldest_p  = c_s_ex[0].period_value
+				current_v = c_s_ex.last.
+						   data_value
+				current_p = c_s_ex.last.
+						   period_value
 				element = []
-				element.push ser_code,ser_name,oldest_p,oldest_v,current_p,current_v
+				element.push ex.series_code,
+							 ex.series_name,
+							 oldest_p,
+							 oldest_v,
+							 current_p,
+							 current_v
 				@country_series_value.push element
+			end
 	end
   	@country_name = c_subt_ex[0].country_name
-  	@subtopic = params[:target_subtopic].delete("'")
+  	@subtopic = CGI.unescape(params[:target_subtopic])
 	@title = 'Series on '+"'"+@country_name+"'"+' & '+"'"+@subtopic +"'"+': DataClouds.net Alpha'
   end
   def detail
