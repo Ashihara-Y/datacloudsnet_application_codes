@@ -250,11 +250,11 @@
 <tr><th colspan="2"><font color="#339933" size="+1"><%= @c_ex.country_name %> (<%= @country %>)</font></th></tr>
 <tr><th>Region:</th><td><%= @c_ex.region %></td></tr>
 <tr><th>Income Group:</th><td><%= @c_ex.income_group %></td></tr>
-<tr><th>Lending Category:</th><td><%= @c_ex.lending_category %></td></tr>
+<tr><th>Currency Unit:</th><td><%= @c_ex.currency_unit %></td></tr>
 <tr><th colspan="2" ><font color="#339933" size="+1"><%= @s_parts.series_name %> (<%= @series %>)</font></th></tr>
 <tr><th>Topic:</th><td><%= @s_parts.topic %></td></tr>
 <tr><th>Subopic 1:</th><td><%= @s_parts.subtopic1 %></td></tr>
-<tr><th>Source:</th><td>WDI & GDF, World Bank</td></tr>
+<tr><th>Source:</th><td><%= @source %>, &nbsp;World Bank</td></tr>
 </table>
 <br>
 

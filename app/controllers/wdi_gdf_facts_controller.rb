@@ -3,27 +3,49 @@ class WdiGdfFactsController < ApplicationController
 	@title = 'Welcome to DataClouds.net!'
   end
   def general_search
-		ex_gs = WdiGdfFact.search params[:search_words], 
-		                                 :match_mode => :extended2,
-		                                 #:group_by => 'country_code',
-		                                 :group_by => 'series_code',
-		                                 :group_function => :attr,
-		                                 :group_clause => "@count desc",
-		                                 :page => params[:page],
-		                                 :per_page => 250
-
+   if params[:facet_topic] then
+      ex_facets = WdiGdfFact.facets params[:search_words],
+                                           :match_mode => :extended2,
+                                           :group_by => 'series_code',
+                                           :group_function => :attr,
+                                           :group_clause =>"@count desc",
+                                           :page => params[:page],
+                                           :per_page => 250
+    ser_ex = WdiGdfSeries.where('topic=?',params[:facet_topic]).select('subtopic1').map{|x| x.subtopic1}.uniq
+    @result_subfacets = ex_facets[:series_subtopic].to_a.select{|y| ser_ex.include?(y[0])}
+    @result_gs = ex_facets.for(:series_topic => params[:facet_topic])
+         @search_words = ex_facets.args[0]
+         @title = 'General Search Results for ' + "'"+ @search_words +"'" + ' within Topic: ' + "'" + params[:facet_topic] + "'"+'  : DataClouds.net Alpha'
+  elsif params[:facet_subtopic] then
+    ex_facets = WdiGdfFact.facets params[:search_words],
+                                         :match_mode => :extended2,
+                                         :group_by => 'series_code',
+                                         :group_function => :attr,
+                                         :group_clause =>"@count desc",
+                                         :page => params[:page],
+                                         :per_page => 250
+    @result_gs = ex_facets.for(:series_subtopic => params[:facet_subtopic])
+        @search_words = ex_facets.args[0]
+        @title = 'General Search Results for ' + "'"+ @search_words +"'" + ' within Subopic: ' + "'" + params[:facet_subtopic] + "'"+'  : DataClouds.net Alpha'    
+  else
+        ex_gs = WdiGdfFact.search params[:search_words],
+                                         :match_mode => :extended2,
+                                         :group_by => 'series_code',
+                                         :group_function => :attr,
+                                         :group_clause => "@count desc",
+                                         :page => params[:page],
+                                         :per_page => 250
         if ex_gs.length==0
         then
-          redirect_to(:controller=>"wdi_gdf_facts", :action=>"index")
-          flash[:message_1] = "Sorry, we have no data for such keywords."
-        else           
+         redirect_to(:controller=>"wdi_gdf_facts", :action=>"index")
+       flash[:message_1] = "Sorry, we have no data for such keywords."
+    else
+            @result_facets = ex_gs.facets.values[0].to_a
             @result_gs = ex_gs
-            @result_facets = ex_gs.facets
-			@search_words = @result_gs.args[0]
-            @title = 'General Search Results for +"'"+@search_words+"'": DataClouds.net Alpha'
-            #session[:search_words] = params[:search_words]
-            #@result_gs_total_length = ex_gs.total_entries
+            @search_words = @result_gs.args[0]
+            @title = 'General Search Results for ' + "'"+ @search_words +"'"+' : DataClouds.net Alpha'
         end
+   end
   end
   def search
 		ex_s = WdiGdfSeries.find_by_sql(["select * from wdi_gdf_series where match(series_name) against(?) order by subtopic1", params[:search_words]])
@@ -170,13 +192,15 @@ class WdiGdfFactsController < ApplicationController
                         :select => "series_name,
 									topic,
 									subtopic1,
-									long_definition",
+									long_definition,
+									wdi",
                         :conditions => ["wdi_gdf_series.series_code = ?", 
 										params[:target_series_code]]
                         )
 		@title = "'"+@s_parts.series_name+"'"+' of '+"'"+@c_ex.country_name+"'"+': DataClouds.net Alpha'
 		@chart_style = params[:chart_style]
 		@chart_style = 'BarChart' if @chart_style.nil?
+		if @s_parts.wdi=='WDI' then @source = 'WDI' else @source = 'GDF' end
   end
   def globalcompare
     if params[:period].nil? then params[:period] = 2008 end

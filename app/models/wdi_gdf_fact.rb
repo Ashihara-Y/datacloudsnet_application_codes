@@ -7,7 +7,7 @@ class WdiGdfFact < ActiveRecord::Base
 		indexes country_name, :sortable => true
 		indexes series_name, :sortable => true
 		indexes wdi_gdf_series.topic, :as => :series_topic, :facet => true
-		indexes wdi_gdf_series.subtopic1, :as => :series_subtopic
+		indexes wdi_gdf_series.subtopic1, :as => :series_subtopic, :facet => true
 
 		has country_code, series_code
 	end

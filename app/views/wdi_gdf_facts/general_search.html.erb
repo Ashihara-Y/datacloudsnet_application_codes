@@ -1,15 +1,43 @@
-<div id="breadcrumbs"><p class="breadecrumbs"><a href="/wdi_gdf_facts/index">Home</a>&nbsp;&gt;&nbsp;General Search Results</p></div>
+<div id="breadcrumbs"><p class="breadecrumbs"><a href="/wdi_gdf_facts/index">Home</a>&nbsp;&gt;&nbsp;General search results on '<%= @search_words %>'</p></div>
 
-Your keywords matched with <%= @result_gs.total_entries %> series as follows (Page: <%= @result_gs.current_page %> / <%= @result_gs.total_pages %>):
+Your keywords, '<%= @result_gs.args[0] %>' matched with <%= @result_gs.total_entries %> series as follows (Page: <%= @result_gs.current_page %> / <%= @result_gs.total_pages %>):
 <table id="result-t" >
+ <% if @result_facets  %>
  <tr>
- <th>Search Results (Series Name, Country Name)</th>
+ <th>Facets of Result (Topic)
+ </th>
+ </tr>
+   <% @result_facets.each do |x| %>
+     <tr>
+     <td>
+     <a href="/wdi_gdf_facts/general_search?search_words=<%= CGI.escape(@search_words) %>&facet_topic=<%= CGI.escape(x[0]) %>"><%= x[0] %> (<%= x[1].to_i/50 %>)</a>
+     </td>
+     </tr>
+   <% end %>
+ <% end %>
+ <% if @result_subfacets  %>
+ <tr>
+ <th>Facets of Result (Subopic)
+ </th>
+ </tr>
+   <% @result_subfacets.each do |x| %>
+     <tr>
+     <td>
+     <a href="/wdi_gdf_facts/general_search?search_words=<%= CGI.escape(@search_words) %>&facet_subtopic=<%= CGI.escape(x[0]) %>"><%= x[0] %> (<%= x[1].to_i/50 %>)</a>
+     </td>
+     </tr>
+   <% end %>
+ <% end %>
+ <tr> <th>Results (Series Name, Country Name)</th>
  </tr>
  <% @result_gs.each do |ex| %>
  <tr>
- <td><a href="/wdi_gdf_facts/detail?target_series_code=<%= ex.series_code %>&target_country_code=<%= ex.country_code%>"><%= ex.series_name %>, <%= ex.country_name %></td>
+ <td>
+  <a href="/wdi_gdf_facts/detail?target_series_code=<%= ex.series_code %>&target_country_code=<%= ex.country_code %>">
+  <%= ex.series_name %>, <%= ex.country_name %> 
+  </a>
+ </td>
  </tr>
 <% end %>
 </table>
 <%= will_paginate @result_gs %>
-
