@@ -1,5 +1,8 @@
 <div id="breadcrumbs"><p class="breadecrumbs"><a href="/wdi_gdf_facts/index">Home</a>&nbsp;&gt;&nbsp;<a href="/wdi_gdf_facts/list?search_string=<%= @country %>"><%= @country_name %> (<%= @country %>)</a>&nbsp;&gt;&nbsp;'<%= @subtopic %>'</p></div>
 <span>
+      <% if flash[:message_4] %>
+        <div style="color: green"><%= h flash[:message_4] %></div>
+      <% end %>
    <form action="/wdi_gdf_facts/show" method="get" >
 	<input type="hidden" name="target_subtopic" value='<%= @subtopic %>'>
     <select name="target_country_code">
@@ -25,7 +28,6 @@
 		<option value="UMC" >Upper middle income countries</option>
 		<option value="HIC" >High income countires</option>
 		<option value="EMU" >Euro area</option>
-		<option value="DAC" >DAC countries</option>
 		</optgroup>
 		<option value="WLD" >World</option>
 		<option value="AFG" >Afghanistan</option>

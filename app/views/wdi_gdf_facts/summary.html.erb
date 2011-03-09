@@ -1,5 +1,11 @@
 <div id="breadcrumbs"><p class="breadecrumbs"><a href="/wdi_gdf_facts/index">Home</a>&nbsp;&gt;&nbsp;<a href="/wdi_gdf_facts/list?search_string=<%= @country %>"><%= @country_name %> (<%= @country %>)</a>&nbsp;&gt;&nbsp;'Summary for <%= @country_name %> in <%= @period %>'</p></div>
 <span>
+      <% if flash[:message_5] %>
+        <div style="color: green"><%= h flash[:message_5] %></div>
+      <% end %>
+      <% if flash[:message_4] %>
+        <div style="color: green"><%= h flash[:message_4] %></div>
+      <% end %>
    <form action="/wdi_gdf_facts/summary" method="get" >
 	<input type="hidden" name="target_country_code" value="<%= @country %>">
     <select name="period">
@@ -53,6 +59,7 @@
 		<option value="2006" >2006</option>
 		<option value="2007" >2007</option>
 		<option value="2008" >2008</option>
+		<option value="2009" >2009</option>
 	</select>
 	<input type="submit" value="Change to Other Period" >
    </form>

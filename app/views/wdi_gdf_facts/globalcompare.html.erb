@@ -1,5 +1,8 @@
 <h4>Global Comparison on '<%= @series_name %>' in <%= @period %></h4>
 <span>
+      <% if flash[:message_5] %>
+        <div style="color: green"><%= h flash[:message_5] %></div>
+      <% end %>
    <form action="/wdi_gdf_facts/globalcompare" method="get" >
 	<input type="hidden" name="target_series_code" value="<%= @series %>">
     <select name="period">
@@ -61,7 +64,7 @@
 
 <div id="data-detail">
 <div id="data-t-d">
-<table id="data-t-l" >
+<table id="data-t-l" style="width:400px;">
  <tr>
   <th>Country</th>
   <th>Value</th>
@@ -69,12 +72,14 @@
 
 <% @g_comp_country.each do |ex| %>
  <tr>
-  <td id="td-p" ><a href="/wdi_gdf_facts/detail?target_country_code=<%= ex.country_code %>&target_series_code=<%= ex.series_code %>" ><%= h ex.country_name %></a></td>
+  <td id="td-p" style="width:250px;"><a href="/wdi_gdf_facts/detail?target_country_code=<%= ex.country_code %>&target_series_code=<%= ex.series_code %>" ><%= h ex.country_name %></a></td>
   <td id="td-d" ><%= h number_with_delimiter(ex.data_value.to_f.round(1)) %></td>
  </tr>
 <% end %>
 </table>
 </div>
+
+
 </div>
 
 

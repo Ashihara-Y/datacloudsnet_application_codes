@@ -3,6 +3,10 @@ class WdiGdfFactsController < ApplicationController
 	@title = 'Welcome to DataClouds.net!'
   end
   def general_search
+    if params[:search_words].nil? || params[:search_words].empty? then
+       redirect_to(:controller=>"wdi_gdf_facts", :action=>"index") 
+       flash[:message_1] = "Please specify your keywords."
+	end
    if params[:facet_topic] then
       ex_facets = WdiGdfFact.facets params[:search_words],
                                            :match_mode => :extended2,
@@ -52,26 +56,29 @@ class WdiGdfFactsController < ApplicationController
 
 		if ex_s.length==0
 		then
-	     redirect_to(:controller=>"wdi_gdf_facts", :action=>"index")
+         redirect_to(:controller=>"wdi_gdf_facts", :action=>"index") 
          flash[:message_3] = "Sorry, we have no data for such keyword."
         else
 			@result_s = Array.new
 			 ex_s.each do |ex|
 			 	@result_s.push [ex.series_name,ex.series_code,ex.topic,ex.subtopic1]
 			 end
-			
 			@result_subtopic_list= WdiGdfSeries.find_by_sql(["select subtopic1, count(*) from wdi_gdf_series where match(series_name) against(?) group by subtopic1", params[:search_words]])
 		@title = 'Results for '+"'"+params[:search_words]+"'"+': DataClouds.net Alpha'
 		end
   end
   def list
+    if params[:search_string].nil? || params[:search_string].empty? then
+       redirect_to(:controller=>"wdi_gdf_facts", :action=>"index") 
+       flash[:message_2] = "Please specify your keywords."
+	end
         ver =WdiGdfCountry.
 			  where('country_name LIKE ? OR country_code LIKE ?', 
 			  params[:search_string], params[:search_string]).
 			  first
         if ver.nil?
         then
-	     redirect_to(:controller=>"wdi_gdf_facts", :action=>"index")
+	     params[:search_string]=''
          flash[:message_2] = "Sorry, we have no data for such keyword."
         else
                if params[:search_string].match(/[A-Z]{3}/).nil?
@@ -110,7 +117,12 @@ class WdiGdfFactsController < ApplicationController
         end
   end
   def summary
-    if params[:period].nil? then params[:period]=2008 end
+    if params[:period].nil? || params[:period].empty? then params[:period]=2008 
+       flash[:message_5] = "You may change the period between 1960 and 2009."
+	end
+    if params[:target_country_code].nil? || params[:target_country_code].empty? then params[:target_country_code]='WLD' 
+       flash[:message_4] = "Please specify your target Area/Country."
+	end
     ex_overview = WdiGdfFact.select('wdi_gdf_facts.series_code, wdi_gdf_facts.series_name, wdi_gdf_facts.country_code, wdi_gdf_facts.country_name, wdi_gdf_facts.period_value, wdi_gdf_facts.data_value, wdi_gdf_series.overview').
                              where('country_code =? AND 
                                     overview >=? AND 
@@ -126,6 +138,9 @@ class WdiGdfFactsController < ApplicationController
 	@title = 'Summary for '+"'"+@country_name+"'"+': DataClouds.net Alpha'
   end
   def show
+    if params[:target_country_code].nil? || params[:target_country_code].empty? then params[:target_country_code]='WLD' 
+       flash[:message_4] = "Please specify your target Area/Country."
+	end
   	@country = params[:target_country_code]
     #c_ex = WdiGdfCountry.where('country_code=?', @country).first
 	subt = CGI.unescape(params[:target_subtopic])
@@ -166,6 +181,9 @@ class WdiGdfFactsController < ApplicationController
 	@title = 'Series on '+"'"+@country_name+"'"+' & '+"'"+@subtopic +"'"+': DataClouds.net Alpha'
   end
   def detail
+    if params[:target_country_code].nil? || params[:target_country_code].empty? then params[:target_country_code]='WLD' 
+       flash[:message_4] = "Please specify your target Area/Country."
+	end
         @detail = WdiGdfFact.find(:all,
 				:select => "period_value, data_value",
 				:order => 'period_value DESC',
@@ -203,7 +221,9 @@ class WdiGdfFactsController < ApplicationController
 		if @s_parts.wdi=='WDI' then @source = 'WDI' else @source = 'GDF' end
   end
   def globalcompare
-    if params[:period].nil? then params[:period] = 2008 end
+    if params[:period].nil? || params[:period].empty? then params[:period]=2008 
+       flash[:message_5] = "You may change the period between 1960 and 2009."
+	end
     @g_comp_country = WdiGdfFact.select('wdi_gdf_facts.country_name, 	
 										wdi_gdf_facts.country_code, 
 										series_code, 
@@ -217,12 +237,20 @@ class WdiGdfFactsController < ApplicationController
                               joins('left join wdi_gdf_countries 
 									on wdi_gdf_countries.id = wdi_gdf_facts.country_id')
 
+		@A_for_Graph = Array.new
+        
+		@g_comp_country.each do |g|
+			if g.data_value.nil? || g.data_value==0 then next end
+			@A_for_Graph.push [g.country_name, g.data_value]
+		end
+		@A_for_Graph = @A_for_Graph.sort_by{|ex| ex[1]}
+
     @chart_style = params[:chart_style]
     @chart_style = 'BarChart' if @chart_style.nil?
 	@series_name = @g_comp_country[0].series_name
 	@period = params[:period]
     @series = params[:target_series_code]
-	@title = 'Global Comparison on'+"'"+@g_comp_country[0].series_name+"'"+': DataClouds.net Alpha'
+	@title = 'Global Comparison on '+"'"+@g_comp_country[0].series_name+"'"+': DataClouds.net Alpha'
   end
 
 
