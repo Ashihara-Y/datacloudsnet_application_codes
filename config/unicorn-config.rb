@@ -14,6 +14,6 @@ worker_processes 4
 timeout $timeout
 listen $listen
 
-stderr_path "/var/html/dataclouds-3alpha-alpha/log/unicorn.log"
-stdout_path "/var/html/dataclouds-3alpha-alpha/log/unicorn.log"
+stderr_path "log/unicorn.log"
+stdout_path "log/unicorn.log"
 
