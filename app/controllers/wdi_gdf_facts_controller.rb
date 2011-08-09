@@ -2,6 +2,8 @@ class WdiGdfFactsController < ApplicationController
   def index
 	@title = 'Welcome to DataClouds.net!'
   end
+
+
   def general_search
     if params[:search_words].nil? || params[:search_words].empty? then
        redirect_to(:controller=>"wdi_gdf_facts", :action=>"index") 
@@ -47,10 +49,12 @@ class WdiGdfFactsController < ApplicationController
             @result_facets = ex_gs.facets.values[0].to_a
             @result_gs = ex_gs
             @search_words = @result_gs.args[0]
-            @title = 'General Search Results for ' + "'"+ @search_words +"'"+' : DataClouds.net Alpha'
+            #@title = 'General Search Results for ' + "'"+ @search_words +"'"+' : DataClouds.net Alpha'
         end
    end
   end
+
+
   def search
 		ex_s = WdiGdfSeries.find_by_sql(["select * from wdi_gdf_series where match(series_name) against(?) order by subtopic1", params[:search_words]])
 
@@ -67,6 +71,8 @@ class WdiGdfFactsController < ApplicationController
 		@title = 'Results for '+"'"+params[:search_words]+"'"+': DataClouds.net Alpha'
 		end
   end
+
+
   def list
     if params[:search_string].nil? || params[:search_string].empty? then
        redirect_to(:controller=>"wdi_gdf_facts", :action=>"index") 
@@ -116,6 +122,8 @@ class WdiGdfFactsController < ApplicationController
 				@title = 'Topic list for '+"'"+@country_name+"'"+': DataClouds.net Alpha'
         end
   end
+
+
   def summary
     if params[:period].nil? || params[:period].empty? then params[:period]=2008 
        flash[:message_5] = "You may change the period between 1960 and 2009."
@@ -137,53 +145,100 @@ class WdiGdfFactsController < ApplicationController
 	@country_name = ex_overview[0].country_name
 	@title = 'Summary for '+"'"+@country_name+"'"+': DataClouds.net Alpha'
   end
+
+
   def show
-    if params[:target_country_code].nil? || params[:target_country_code].empty? then params[:target_country_code]='WLD' 
-       flash[:message_4] = "Please specify your target Area/Country."
-	end
+    if params[:target_country_code].nil? || params[:target_country_code].empty? then 
+      params[:target_country_code]='WLD' 
+      flash[:message_4] = "Please specify your target Area/Country." end
+
   	@country = params[:target_country_code]
-    #c_ex = WdiGdfCountry.where('country_code=?', @country).first
-	subt = CGI.unescape(params[:target_subtopic])
-  	c_subt_ex = WdiGdfFact.
-				select('series_id, 
-						period_value, 
-						data_value,
-						country_name').
-				where('country_code=? AND subtopic1=? AND data_value !=?', @country,subt,'').
-				joins('left join wdi_gdf_series on wdi_gdf_series.id=series_id').
-				order('period_value')
-   	series_ex = WdiGdfSeries.
-				where('subtopic1=?', subt).
-				select('id, series_code, series_name')
-	#s_id_ex = series_ex.map{|x| x.id}
-	@country_series_value = []
-	series_ex.each do |ex|
-			c_s_ex = c_subt_ex.select{|x| x.series_id==ex.id }
-			if c_s_ex[0].nil? then next else
-				oldest_v  = c_s_ex[0].data_value
-				oldest_p  = c_s_ex[0].period_value
-				current_v = c_s_ex.last.
-						   data_value
-				current_p = c_s_ex.last.
-						   period_value
-				element = []
-				element.push ex.series_code,
-							 ex.series_name,
-							 oldest_p,
-							 oldest_v,
-							 current_p,
-							 current_v
-				@country_series_value.push element
+
+	  subt = CGI.unescape(params[:target_subtopic])
+
+    # from wdi_gdf_fact, retrieve rows with trgt_country_code and trgt_subtopic1, 
+    # joining with show_ref, materialized-view table.
+    c_subt_ex_min = WdiGdfFact.
+        select('wdi_gdf_facts.series_code,
+                wdi_gdf_facts.series_name,
+                wdi_gdf_facts.country_code,
+                wdi_gdf_facts.country_name,
+                wdi_gdf_facts.data_value,
+                wdi_gdf_facts.period_value,
+                wdi_gdf_facts.showref_id').
+        where('show_refs.country_code=? AND show_refs.subtopic1=?', @country, subt).
+        joins('left join show_refs 
+                on show_refs.series_code=wdi_gdf_facts.series_code 
+                and show_refs.country_code=wdi_gdf_facts.country_code
+                and show_refs.period_min=wdi_gdf_facts.period_value')
+
+    c_subt_ex_max = WdiGdfFact.
+        select('wdi_gdf_facts.data_value,
+                wdi_gdf_facts.period_value,
+                wdi_gdf_facts.showref_id').
+        where('show_refs.country_code=? AND show_refs.subtopic1=?', @country, subt).
+        joins('left join show_refs 
+                on show_refs.series_code=wdi_gdf_facts.series_code 
+                and show_refs.country_code=wdi_gdf_facts.country_code
+                and show_refs.period_max=wdi_gdf_facts.period_value')
+
+# old_codes
+#    c_subt_ex = WdiGdfFact.
+#				select('series_id,
+#				    wdi_gdf_facts.series_code,
+#				    wdi_gdf_facts.series_name,
+#						period_value, 
+#						data_value,
+#						country_name').
+#				where('country_code=? AND subtopic1=? AND data_value !=?', @country,subt,'').
+#				joins('left join wdi_gdf_series on wdi_gdf_series.id=series_id').
+#				order('series_id')
+
+    # from wdi_gdf_series, retrieve rows with trgt_subtopic1
+   	#series_ex = WdiGdfSeries.
+		#		where('subtopic1=?', subt).
+		#		select('id, series_code, series_name')
+# 	  series_ex = c_subt_ex.map{|x| x.series_id}.uniq
+
+	  @country_series_value = []
+
+    c_subt_ex_min.each do |ex_min|
+      c_subt_ex_max.each do |ex_max|
+        if ex_min.showref_id==ex_max.showref_id then
+        element = [ex_min.series_code,ex_min.series_name,ex_min.period_value,ex_min.data_value,ex_max.period_value,ex_max.data_value]
+        else next
+        end
+
+#			c_s_ex = c_subt_ex.select{|x| x.series_id==ex }
+#			if c_s_ex[0].nil? then next else
+#				oldest_v  = c_s_ex[0].data_value
+#				oldest_p  = c_s_ex[0].period_value
+#				current_v = c_s_ex.last.
+#						   data_value
+#				current_p = c_s_ex.last.
+#						   period_value
+#				element = []
+#				element.push c_s_ex.map{|x| x.series_code}.uniq,
+#							       c_s_ex.map{|y| y.series_name}.uniq,
+#							       oldest_p,
+#							       oldest_v,
+#							       current_p,
+#							       current_v
+
+			  @country_series_value.push element
+
 			end
-	end
-  	@country_name = c_subt_ex[0].country_name
+	  end
+  	@country_name = c_subt_ex_min[0].country_name
   	@subtopic = CGI.unescape(params[:target_subtopic])
-	@title = 'Series on '+"'"+@country_name+"'"+' & '+"'"+@subtopic +"'"+': DataClouds.net Alpha'
+	  @title = 'Series on '+"'"+@country_name+"'"+' & '+"'"+@subtopic +"'"+': DataClouds.net Alpha'
   end
+
+
   def detail
     if params[:target_country_code].nil? || params[:target_country_code].empty? then params[:target_country_code]='WLD' 
        flash[:message_4] = "Please specify your target Area/Country."
-	end
+	  end
         @detail = WdiGdfFact.find(:all,
 				:select => "period_value, data_value",
 				:order => 'period_value DESC',

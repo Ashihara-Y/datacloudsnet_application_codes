@@ -1,19 +1,19 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.5'
+gem 'rails', '3.0.9'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
-gem 'mysql2'
+gem 'mysql2', '~> 0.2.7'
 #gem 'passenger'
 #gem 'scruffy'
 gem 'jquery-rails'
 gem 'will_paginate', '~> 3.0.pre'
 
-gem 'mongrel', '1.2.0.pre2'
+#gem 'mongrel', '1.2.0.pre2'
 
-gem 'mongrel_cluster'
+#gem 'mongrel_cluster'
 
 # Use unicorn as the web server
 gem 'unicorn'
@@ -31,19 +31,22 @@ gem 'thinking-sphinx',
   :require	=> 'thinking_sphinx'
 
 # Use rpx_now
-gem 'rpx_now'
+#gem 'rpx_now'
+
+#Use Omniauth
+gem 'omniauth', '~> 0.2.6'
 
 # For development, test
-#group :development, :test do
-#	gem 'capybara'
-#	gem 'database_cleaner'
-#	gem 'cucumber-rails'
-#	gem 'cucumber'
-#	gem 'rspec-rails', '>=2.0.0.beta.5'
-#	gem 'rspec', '>=2.0.0.beta.5'
-#	gem 'spork'
-#	gem 'launchy'
-#end
+group :development, :test do
+	gem 'capybara'
+	gem 'database_cleaner'
+	gem 'cucumber-rails'
+	gem 'cucumber'
+	gem 'rspec-rails', '>=2.0.0.beta.5'
+	gem 'rspec', '>=2.0.0.beta.5'
+	gem 'spork'
+	gem 'launchy'
+end
 
 # Bundle the extra gems:
 # gem 'bj'
