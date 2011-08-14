@@ -12,8 +12,9 @@ gem 'jquery-rails'
 gem 'will_paginate', '~> 3.0.pre'
 
 #gem 'mongrel', '1.2.0.pre2'
-
 #gem 'mongrel_cluster'
+
+gem 'gvis', '>= 2.0.0'
 
 # Use unicorn as the web server
 gem 'unicorn'
