@@ -264,22 +264,22 @@ class WdiGdfFactsController < ApplicationController
        flash[:message_5] = "You may change the period between 1960 and 2009."
 	end
     @g_comp_country = WdiGdfFact.select('wdi_gdf_facts.country_name, 	
-										wdi_gdf_facts.country_code, 
-										series_code, 
-										series_name, 
-										data_value').
-                              order('data_value desc').
-                              where('series_code =? AND period_value =? AND region !=?', 
-	                              params[:target_series_code],
-	                              params[:period],
-	                              'Aggregates').
-                              joins('left join wdi_gdf_countries 
-									on wdi_gdf_countries.id = wdi_gdf_facts.country_id')
+										                    wdi_gdf_facts.country_code, 
+										                    series_code, 
+										                    series_name, 
+										                    data_value').
+                                order('data_value desc').
+                                where('series_code =? AND period_value =? AND region !=?', 
+	                                    params[:target_series_code],
+	                                    params[:period],
+	                                    'Aggregates').
+                                joins('left join wdi_gdf_countries 
+									                    on wdi_gdf_countries.id = wdi_gdf_facts.country_id')
 
 		@A_for_Graph = Array.new
         
 		@g_comp_country.each do |g|
-			if g.data_value.nil? || g.data_value==0 || g.nil? || g.empty? then next end
+			if g.data_value.nil? || g.data_value==0 || g.nil? then next end
 		
 		  @A_for_Graph.push [g.country_name, g.data_value]
 		
