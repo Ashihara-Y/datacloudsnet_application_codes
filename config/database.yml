@@ -9,6 +9,7 @@ development:
   adapter: mysql2
   encoding: utf8
   reconnect: false
+  host: dataclouds-rds.cr2knuvroy0h.us-east-1.rds.amazonaws.com
 #  database: WDI_GDF_201104
   database: WDIGDF201104
   pool: 5
@@ -25,6 +26,7 @@ test:
   adapter: mysql2
   encoding: utf8
   reconnect: false
+  host: dataclouds-rds.cr2knuvroy0h.us-east-1.rds.amazonaws.com
   database: WDI_GDF_TEST
   pool: 5
   username: rds
@@ -35,6 +37,7 @@ production:
   adapter: mysql2
   encoding: utf8
   reconnect: false
+  host: dataclouds-rds.cr2knuvroy0h.us-east-1.rds.amazonaws.com
 #  database: WDI_GDF_201104
   database: WDIGDF201104
   pool: 5
