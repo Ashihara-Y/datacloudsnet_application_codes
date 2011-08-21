@@ -19,6 +19,8 @@ gem 'gvis', '>= 2.0.0'
 # Use unicorn as the web server
 gem 'unicorn'
 
+gem 'thin'
+
 # Deploy with Capistrano
 # gem 'capistrano'
 
@@ -31,8 +33,8 @@ gem 'thinking-sphinx',
   :branch	=> 'rails3',
   :require	=> 'thinking_sphinx'
 
-# Use rpx_now
-#gem 'rpx_now'
+# Use flying-sphinx
+gem 'flying-sphinx','0.6.0'
 
 #Use Omniauth
 gem 'omniauth', '~> 0.2.6'
