@@ -9,14 +9,15 @@ development:
   adapter: mysql2
   encoding: utf8
   reconnect: false
-  host: dataclouds-rds.cr2knuvroy0h.us-east-1.rds.amazonaws.com
+  host: localhost
+#  host: dataclouds-rds.cr2knuvroy0h.us-east-1.rds.amazonaws.com
 #  database: WDI_GDF_201104
-  database: WDIGDF201104
+#  database: WDIGDF201104
   pool: 5
 #  username: root
 #  password: 1871PVEN+
-  username: rds_admin
-  password: 1871pven
+#  username: rds_admin
+#  password: 1871pven
   #socket: /var/run/mysqld/mysqld.sock
 
 # Warning: The database defined as "test" will be erased and
@@ -26,23 +27,27 @@ test:
   adapter: mysql2
   encoding: utf8
   reconnect: false
-  host: dataclouds-rds.cr2knuvroy0h.us-east-1.rds.amazonaws.com
-  database: WDI_GDF_TEST
+  host:localhost
+#  host: dataclouds-rds.cr2knuvroy0h.us-east-1.rds.amazonaws.com
+#  database: WDI_GDF_TEST
   pool: 5
-  username: rds
-  password: 1871pven
+#  username: rds_admin
+#  password: 1871pven
+# username: root
+# password: 1871PVEN+
   #socket: /var/run/mysqld/mysqld.sock
 
 production:
   adapter: mysql2
   encoding: utf8
   reconnect: false
-  host: dataclouds-rds.cr2knuvroy0h.us-east-1.rds.amazonaws.com
+  host: localhost
+#  host: dataclouds-rds.cr2knuvroy0h.us-east-1.rds.amazonaws.com
 #  database: WDI_GDF_201104
-  database: WDIGDF201104
+#  database: WDIGDF201104
   pool: 5
 #  username: root
 #  password: 1871PVEN+
-  username: rds_admin
-  password: 1871pven
+#  username: rds_admin
+#  password: 1871pven
   #socket: /var/run/mysqld/mysqld.sock
