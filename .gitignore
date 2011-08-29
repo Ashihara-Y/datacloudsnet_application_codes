@@ -2,3 +2,6 @@
 db/*.sqlite3
 log/*.log
 tmp/**/*
+Procfile
+config/database.yml
+db/sphinx/development/wdi_gdf_fact_core.*
