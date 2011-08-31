@@ -5,3 +5,5 @@ tmp/**/*
 Procfile
 config/database.yml
 db/sphinx/development/wdi_gdf_fact_core.*
+Gemfile
+Gemfile.lock
